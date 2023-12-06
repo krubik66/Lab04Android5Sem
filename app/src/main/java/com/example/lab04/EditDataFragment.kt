@@ -9,11 +9,10 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import com.example.lab04.databinding.FragmentEditDataBinding
 import com.example.lab04.databinding.FragmentShowDataBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,22 +22,21 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ShowDataFragment.newInstance] factory method to
+ * Use the [EditDataFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ShowDataFragment : Fragment() {
+class EditDataFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var _binding: FragmentShowDataBinding
-    lateinit var showName: TextView
-    lateinit var showSpec: TextView
-    lateinit var showStrength: ProgressBar
+    private lateinit var _binding: FragmentEditDataBinding
+    lateinit var showName: EditText
+    lateinit var showSpec: EditText
+    lateinit var showStrength: SeekBar
     lateinit var showType: ImageView
     lateinit var showDanger: CheckBox
     lateinit var returnButton: Button
-    lateinit var editButton: Button
 
     lateinit var saveType: String
     var pos: Int = -1
@@ -57,22 +55,21 @@ class ShowDataFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentShowDataBinding.inflate(inflater, container, false)
+        _binding = FragmentEditDataBinding.inflate(inflater, container, false)
         showName=_binding.showName
         showSpec=_binding.showSpec
         showStrength=_binding.showStrengthBar
         showType=_binding.showType
         showDanger=_binding.showDangerous
         returnButton=_binding.showReturnButton
-        editButton = _binding.editButton
         return _binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editButton.setOnClickListener {
+        returnButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
-                "msgtoedit", bundleOf(
+                "editItem", bundleOf(
                     "name" to showName.text.toString(),
                     "spec" to showSpec.text.toString(),
                     "strength" to showStrength.progress,
@@ -82,16 +79,13 @@ class ShowDataFragment : Fragment() {
                     "edit" to true
                 )
             )
-            findNavController().navigate(R.id.action_showDataFragment_to_editDataFragment)
+            findNavController().navigate(R.id.action_editDataFragment_to_thirdFragment)
         }
-        returnButton.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
-        parentFragmentManager.setFragmentResultListener("msgtochild", viewLifecycleOwner){
+        parentFragmentManager.setFragmentResultListener("msgtoedit", viewLifecycleOwner){
                 _, bundle ->
             run {
-                showName.text = bundle.getString("name")
-                showSpec.text = bundle.getString("spec")
+                showName.setText(bundle.getString("name"))
+                showSpec.setText(bundle.getString("spec"))
                 showDanger.isChecked = bundle.getBoolean("danger")
                 showStrength.progress = bundle.getFloat("strength").toInt()
                 saveType = bundle.getString("type", "Skeleton")
@@ -104,6 +98,7 @@ class ShowDataFragment : Fragment() {
         }
     }
 
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -111,12 +106,12 @@ class ShowDataFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment ShowDataFragment.
+         * @return A new instance of fragment EditDataFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ShowDataFragment().apply {
+            EditDataFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

@@ -32,7 +32,11 @@
         android:id="@+id/showDataFragment"
         android:name="com.example.lab04.ShowDataFragment"
         android:label="fragment_show_data"
-        tools:layout="@layout/fragment_show_data" />
+        tools:layout="@layout/fragment_show_data" >
+        <action
+            android:id="@+id/action_showDataFragment_to_editDataFragment"
+            app:destination="@id/editDataFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addDataFragment"
         android:name="com.example.lab04.AddDataFragment"
@@ -54,4 +58,12 @@
         app:destination="@id/thirdFragment"
         app:launchSingleTop="true"
         app:popUpTo="@id/firstFragment" />
+    <fragment
+        android:id="@+id/editDataFragment"
+        android:name="com.example.lab04.EditDataFragment"
+        android:label="EditDataFragment" >
+        <action
+            android:id="@+id/action_editDataFragment_to_thirdFragment"
+            app:destination="@id/thirdFragment" />
+    </fragment>
 </navigation>
