@@ -10,6 +10,7 @@ class RepositoryItem {
     var item_strength : Float = Random.nextInt(0, 6).toFloat()
     var item_type : String = summons[Random.nextInt(0, 3)]
     var dangerous : Boolean = Random.nextBoolean()
+    var isChecked: Boolean = false
 
     constructor()
     constructor(num: Int) : this() {

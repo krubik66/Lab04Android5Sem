@@ -19,7 +19,12 @@ class DataRepository {
         return dataList
     }
 
-    fun deleteItem(position: Int): Boolean {
+    fun deleteItem(item: RepositoryItem): Boolean {
+        dataList.remove(item)
+        return true
+    }
+
+    fun deleteAt(position: Int): Boolean {
         dataList.removeAt(position)
         return true
     }

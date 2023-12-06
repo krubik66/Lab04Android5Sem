@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -57,6 +58,9 @@ class ThirdFragment : Fragment() {
         val adapter = DataRepository.getInstance().getData()?.let { MyAdapter(it) }
         recView.adapter = adapter
         data = adapter!!.data
+        _binding.floatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_thirdFragment_to_addDataFragment)
+        }
 
         return _binding.root
     }
@@ -106,10 +110,18 @@ class ThirdFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.addListItemMenuButton -> {
-                findNavController().navigate(R.id.action_thirdFragment_to_addDataFragment)
+                deleteSelectedItems()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteSelectedItems() {
+        val selectedItems = dataList.getData()?.filter { it.isChecked }
+        selectedItems?.forEach {
+            dataList.deleteItem(it)
+        }
+        activity?.recreate()
     }
 
     inner class MyAdapter(var data: MutableList<RepositoryItem>) :
@@ -119,6 +131,7 @@ class ThirdFragment : Fragment() {
             val txt1: TextView = viewBinding.itemTitle
             val txt2: TextView = viewBinding.itemSpec1
             val img: ImageView = viewBinding.itemImg
+            val checkbox: CheckBox = viewBinding.itemCheckbox
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -141,6 +154,7 @@ class ThirdFragment : Fragment() {
             } else {
                 currData.text_spec
             }
+            holder.checkbox.isChecked = currData.isChecked
             holder.itemView.setOnClickListener {
                 parentFragmentManager.setFragmentResult(
                     "msgtochild", bundleOf(
@@ -158,12 +172,18 @@ class ThirdFragment : Fragment() {
 
                 findNavController().navigate(R.id.action_thirdFragment_to_showDataFragment)
             }
+            holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                currData.isChecked = isChecked
+            }
             holder.itemView.setOnLongClickListener {
-                if (dataList.deleteItem(position))
+                if (dataList.deleteAt(position))
                     notifyDataSetChanged()
                 true
             }
-            holder.img.setImageResource(R.drawable.skeletonicon)
+            when(currData.item_type) {
+                "Lich" -> holder.img.setImageResource(R.drawable.playericon)
+                else -> holder.img.setImageResource(R.drawable.skeletonicon)
+            }
         }
     }
 
