@@ -1,6 +1,7 @@
 package com.example.lab04
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,9 +38,14 @@ class EditDataFragment : Fragment() {
     lateinit var showType: ImageView
     lateinit var showDanger: CheckBox
     lateinit var returnButton: Button
+    lateinit var cancelButton: Button
 
     lateinit var saveType: String
     var pos: Int = -1
+    var name = ""
+    var spec = ""
+    var str = 1.0F
+    var danger = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +68,7 @@ class EditDataFragment : Fragment() {
         showType=_binding.showType
         showDanger=_binding.showDangerous
         returnButton=_binding.showReturnButton
+        cancelButton=_binding.cancelButton
         return _binding.root
     }
 
@@ -81,13 +88,33 @@ class EditDataFragment : Fragment() {
             )
             findNavController().navigate(R.id.action_editDataFragment_to_thirdFragment)
         }
+        cancelButton.setOnClickListener {
+            parentFragmentManager.setFragmentResult(
+                "msgtochild", bundleOf(
+                    "name" to name,
+                    "spec" to spec,
+                    "strength" to str,
+                    "danger" to danger,
+                    "type" to saveType,
+                    "position" to pos,
+                    "edit" to true
+                )
+            )
+            Log.d("str", str.toString())
+            requireActivity().onBackPressed()
+        }
         parentFragmentManager.setFragmentResultListener("msgtoedit", viewLifecycleOwner){
                 _, bundle ->
             run {
-                showName.setText(bundle.getString("name"))
-                showSpec.setText(bundle.getString("spec"))
-                showDanger.isChecked = bundle.getBoolean("danger")
-                showStrength.progress = bundle.getFloat("strength").toInt()
+                name = bundle.getString("name", "")
+                spec = bundle.getString("spec", "")
+                str = bundle.getFloat("strength")
+                danger = bundle.getBoolean("danger")
+
+                showName.setText(name)
+                showSpec.setText(spec)
+                showDanger.isChecked = danger
+                showStrength.progress = str.toInt()
                 saveType = bundle.getString("type", "Skeleton")
                 pos = bundle.getInt("position", -1)
                 when(saveType) {

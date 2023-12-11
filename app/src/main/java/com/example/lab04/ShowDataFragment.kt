@@ -75,7 +75,7 @@ class ShowDataFragment : Fragment() {
                 "msgtoedit", bundleOf(
                     "name" to showName.text.toString(),
                     "spec" to showSpec.text.toString(),
-                    "strength" to showStrength.progress,
+                    "strength" to showStrength.progress.toFloat(),
                     "danger" to showDanger.isChecked,
                     "type" to saveType,
                     "position" to pos,

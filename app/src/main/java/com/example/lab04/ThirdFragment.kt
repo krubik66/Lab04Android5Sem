@@ -1,5 +1,6 @@
 package com.example.lab04
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -110,7 +111,7 @@ class ThirdFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.addListItemMenuButton -> {
-                deleteSelectedItems()
+                showConfirmationDialog()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -122,6 +123,24 @@ class ThirdFragment : Fragment() {
             dataList.deleteItem(it)
         }
         activity?.recreate()
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirm Removal")
+        builder.setMessage("Are you sure you want to remove selected items from the list?")
+
+        builder.setPositiveButton("Yes") { _, _ ->
+            // User clicked Yes, delete selected items
+            deleteSelectedItems()
+        }
+
+        builder.setNegativeButton("No") { _, _ ->
+            // User clicked No, do nothing
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     inner class MyAdapter(var data: MutableList<RepositoryItem>) :
